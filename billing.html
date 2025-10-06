@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>College Canteen - Billing System</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    
+    /* Login Screen Styles */
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+    }
+    .login-box {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      text-align: center;
+      min-width: 300px;
+    }
+    .login-box h2 {
+      color: #333;
+      margin-bottom: 1.5rem;
+    }
+    .login-box input {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    .login-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+    .login-btn:hover {
+      background: #5a6fd8;
+    }
+    
+    /* Main App Styles */
+    .app-container {
+      display: none;
+    }
+    .header {
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 2rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    .logout-btn {
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .billing-container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      padding: 0 1rem;
+    }
+    .menu-section, .order-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .section-title {
+      color: #333;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 0.5rem;
+    }
+    .category-title {
+      color: #667eea;
+      font-size: 1.2rem;
+      margin: 1.5rem 0 1rem 0;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid #eee;
+      transition: background 0.3s ease;
+    }
+    .item:hover {
+      background: #f8f9ff;
+      border-radius: 5px;
+      margin: 0 -0.5rem;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    .item:last-child {
+      border-bottom: none;
+    }
+    .item-info h4 {
+      margin: 0 0 0.3rem 0;
+      color: #333;
+      font-size: 1.1rem;
+    }
+    .item-info p {
+      margin: 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .add-btn {
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    .add-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    .add-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .customer-input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.3s ease;
+    }
+    .customer-input:focus {
+      border-color: #667eea;
+      outline: none;
+    }
+    .order-item {
+      background: #f8f9ff;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      border-left: 4px solid #667eea;
+    }
+    .order-item h4 {
+      margin: 0 0 0.5rem 0;
+      color: #333;
+    }
+    .order-item p {
+      margin: 0;
+      color: #666;
+    }
+    .item-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .quantity-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .quantity-display {
+      background: #fff;
+      border: 2px solid #667eea;
+      padding: 0.3rem 0.8rem;
+      border-radius: 15px;
+      font-weight: bold;
+      color: #667eea;
+    }
+    .order-total {
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 2rem 0;
+      color: #667eea;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    .process-order {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.3rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, #28a745, #20c997);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .process-order:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+    }
+    .clear-order {
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.8rem;
+      background: linear-gradient(90deg, #6c757d, #5a6268);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .empty-order {
+      text-align: center;
+      color: #999;
+      font-style: italic;
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="loginScreen" class="login-container">
+    <div class="login-box">
+      <h2>🏪 Billing System Access</h2>
+      <p>Enter the billing password to continue</p>
+      <input type="password" id="billingPassword" placeholder="Enter password" onkeypress="handleLoginKeyPress(event)">
+      <br>
+      <button class="login-btn" onclick="authenticateBilling()">Login</button>
+      <p id="loginError" style="color: red; display: none;">Invalid password. Please try again.</p>
+    </div>
+  </div>
+
+  <!-- Main Application -->
+  <div id="mainApp" class="app-container">
+    <div class="header">
+      <button class="logout-btn" onclick="logout()">Logout</button>
+      <h1>🏪 College Canteen - Billing System</h1>
+    </div>
+
+    <div class="billing-container">
+      <div class="menu-section">
+        <h2 class="section-title">📋 Menu Items</h2>
+        <div id="menuItems"></div>
+      </div>
+
+      <div class="order-section">
+        <h2 class="section-title">🛒 Current Order</h2>
+        <input type="text" id="customerName" class="customer-input" placeholder="Enter customer name">
+        <div id="orderItems">
+          <div class="empty-order">No items added to order yet</div>
+        </div>
+        <div class="order-total" id="orderTotal">Total: ₹0.00</div>
+        <button class="process-order" onclick="processOrder()">🛍️ Process Order</button>
+        <button class="clear-order" onclick="clearOrder()">🗑️ Clear Order</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let menuData = {};
+    let currentOrder = {};
+    let orderTotal = 0;
+    let isAuthenticated = false;
+
+    // Authentication Functions
+    async function authenticateBilling() {
+  const password = document.getElementById('billingPassword').value;
+  
+  try {
+    const response = await fetch('/auth/billing', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: password })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      isAuthenticated = true;
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      loadMenu();
+      startAutoRefresh(); // Start auto-refresh when login succeeds
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+      document.getElementById('billingPassword').value = '';
+    }
+  } catch (error) {
+    console.error('Authentication error:', error);
+    alert('Connection error. Please try again.');
+  }
+  }
+
+    function handleLoginKeyPress(event) {
+      if (event.key === 'Enter') {
+        authenticateBilling();
+      }
+ }
+
+  function logout() {
+  isAuthenticated = false;
+  stopAutoRefresh(); // Stop auto-refresh when logging out
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('billingPassword').value = '';
+  document.getElementById('loginError').style.display = 'none';
+  currentOrder = {};
+  orderTotal = 0;
+  renderOrder();
+}
+
+
+    // Menu Functions
+    async function loadMenu() {
+      if (!isAuthenticated) return;
+      
+      try {
+        const response = await fetch('/billing/menu');
+        menuData = await response.json();
+        renderMenu();
+      } catch (error) {
+        console.error('Error loading menu:', error);
+        alert('Error loading menu. Please refresh the page.');
+      }
+    }
+
+    function renderMenu() {
+      const container = document.getElementById('menuItems');
+      container.innerHTML = '';
+
+      Object.keys(menuData).forEach(category => {
+        const categoryDiv = document.createElement('div');
+        categoryDiv.innerHTML = `<h3 class="category-title">${category.toUpperCase()}</h3>`;
+        
+        menuData[category].forEach(item => {
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'item';
+          
+          const stockStatus = item.quantity === 0 ? 'Out of Stock' : `Stock: ${item.quantity}`;
+          const stockColor = item.quantity === 0 ? 'red' : item.quantity < 10 ? 'orange' : 'green';
+          
+          itemDiv.innerHTML = `
+            <div class="item-info">
+              <h4>${item.name}</h4>
+              <p>₹${item.price} | <span style="color: ${stockColor}">${stockStatus}</span></p>
+            </div>
+            <div class="quantity-control">
+              <button class="add-btn" onclick="addToOrder(${item.id})" ${item.quantity === 0 ? 'disabled' : ''}>
+                ${item.quantity === 0 ? 'Out of Stock' : 'Add to Order'}
+              </button>
+            </div>
+          `;
+          categoryDiv.appendChild(itemDiv);
+        });
+        
+        container.appendChild(categoryDiv);
+      });
+    }
+
+    function addToOrder(itemId) {
+      let foundItem = null;
+      
+      Object.keys(menuData).forEach(category => {
+        const item = menuData[category].find(i => i.id === itemId);
+        if (item) foundItem = item;
+      });
+
+      if (!foundItem || foundItem.quantity === 0) return;
+
+      if (currentOrder[itemId]) {
+        if (currentOrder[itemId].quantity < foundItem.quantity) {
+          currentOrder[itemId].quantity++;
+        } else {
+          alert(`Not enough stock available. Only ${foundItem.quantity} items in stock.`);
+          return;
+        }
+      } else {
+        currentOrder[itemId] = {
+          ...foundItem,
+          quantity: 1
+        };
+      }
+
+      renderOrder();
+    }
+
+    function removeFromOrder(itemId) {
+      if (currentOrder[itemId]) {
+        currentOrder[itemId].quantity--;
+        if (currentOrder[itemId].quantity === 0) {
+          delete currentOrder[itemId];
+        }
+      }
+      renderOrder();
+    }
+
+    function renderOrder() {
+      const container = document.getElementById('orderItems');
+      container.innerHTML = '';
+      orderTotal = 0;
+
+      if (Object.keys(currentOrder).length === 0) {
+        container.innerHTML = '<div class="empty-order">No items added to order yet</div>';
+      } else {
+        Object.keys(currentOrder).forEach(itemId => {
+          const item = currentOrder[itemId];
+          const subtotal = item.price * item.quantity;
+          orderTotal += subtotal;
+
+          const orderDiv = document.createElement('div');
+          orderDiv.className = 'order-item';
+          orderDiv.innerHTML = `
+            <h4>${item.name}</h4>
+            <p>₹${item.price} each</p>
+            <div class="item-controls">
+              <button class="quantity-btn" onclick="removeFromOrder(${itemId})">−</button>
+              <span class="quantity-display">${item.quantity}</span>
+              <button class="quantity-btn" onclick="addToOrder(${itemId})">+</button>
+              <span style="margin-left: 1rem; font-weight: bold; color: #667eea;">
+                Subtotal: ₹${subtotal}
+              </span>
+            </div>
+          `;
+          container.appendChild(orderDiv);
+        });
+      }
+
+      document.getElementById('orderTotal').textContent = `Total: ₹${orderTotal.toFixed(2)}`;
+    }
+
+    async function processOrder() {
+      if (Object.keys(currentOrder).length === 0) {
+        alert('Please add items to the order first.');
+        return;
+      }
+
+      const customerName = document.getElementById('customerName').value.trim();
+      if (!customerName) {
+        alert('Please enter customer name.');
+        document.getElementById('customerName').focus();
+        return;
+      }
+
+      const orderItems = Object.keys(currentOrder).map(itemId => ({
+        id: parseInt(itemId),
+        quantity: currentOrder[itemId].quantity
+      }));
+
+      try {
+        const response = await fetch('/billing/order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: orderItems,
+            customerName: customerName
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert(`✅ Order processed successfully!\n\nOrder ID: #${result.order.orderId}\nCustomer: ${result.order.customerName}\nTotal: ₹${result.order.total}\n\nReceipt printed!`);
+          
+          // Update menu with new quantities
+          menuData = result.updatedMenu;
+          
+          // Clear current order
+          currentOrder = {};
+          orderTotal = 0;
+          document.getElementById('customerName').value = '';
+          
+          renderMenu();
+          renderOrder();
+        } else {
+          alert('❌ Error: ' + result.message);
+        }
+      } catch (error) {
+        console.error('Error processing order:', error);
+        alert('❌ Error processing order. Please try again.');
+      }
+    }
+
+    function clearOrder() {
+      if (Object.keys(currentOrder).length === 0) {
+        alert('Order is already empty.');
+        return;
+      }
+      
+      if (confirm('Are you sure you want to clear the current order?')) {
+        currentOrder = {};
+        orderTotal = 0;
+        document.getElementById('customerName').value = '';
+        renderOrder();
+      }
+    }
+    // Add this variable at the top with other variables
+let autoRefreshInterval;
+
+// Add this function to periodically refresh menu data
+function startAutoRefresh() {
+  // Refresh menu data every 5 seconds
+  autoRefreshInterval = setInterval(async () => {
+    try {
+      const response = await fetch('/billing/menu');
+      const newMenuData = await response.json();
+      
+      // Check if menu data has changed
+      if (JSON.stringify(menuData) !== JSON.stringify(newMenuData)) {
+        console.log('Menu updated from admin panel - refreshing...');
+        menuData = newMenuData;
+        renderMenu();
+        
+        // Update current order to reflect changes
+        updateCurrentOrderAfterMenuChange();
+      }
+    } catch (error) {
+      console.error('Error refreshing menu:', error);
+    }
+  }, 5000); // Refresh every 5 seconds
+}
+
+// Add this function to handle order updates when menu changes
+function updateCurrentOrderAfterMenuChange() {
+  const updatedOrder = {};
+  
+  Object.keys(currentOrder).forEach(itemId => {
+    const orderItem = currentOrder[itemId];
+    
+    // Find the item in updated menu
+    let foundItem = null;
+    Object.keys(menuData).forEach(category => {
+      const item = menuData[category].find(i => i.id === parseInt(itemId));
+      if (item) foundItem = item;
+    });
+    
+    if (foundItem) {
+      // Update the order item with new availability/data
+      if (foundItem.available && foundItem.quantity > 0) {
+        updatedOrder[itemId] = {
+          ...foundItem,
+          quantity: Math.min(orderItem.quantity, foundItem.quantity) // Don't exceed available stock
+        };
+      } else {
+        // Item became unavailable, show notification
+        console.log(`${foundItem.name} is no longer available and was removed from order`);
+      }
+    }
+  });
+  
+  currentOrder = updatedOrder;
+  renderOrder();
+}
+
+// Stop auto-refresh when logging out
+function stopAutoRefresh() {
+  if (autoRefreshInterval) {
+    clearInterval(autoRefreshInterval);
+    autoRefreshInterval = null;
+  }
+}
+
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      // Focus on password input
+      document.getElementById('billingPassword').focus();
+    });
+  </script>
+</body>
+</html>
