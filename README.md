@@ -131,4 +131,5 @@ Open an issue or submit a pull request — contributions are always welcome!
 Created with ❤️ by Jayadeep
 For modernizing the college canteen experience — fast, simple, and secure for everyone!
 
-<p align="center"> <i>“Today's app is clean and functional — tomorrow's will be even sleeker, officially integrated, and campus-ready!”</i> </p> 
+<p align="center"><i>“Today's app is clean and functional — tomorrow's will be even sleeker, officially integrated, and campus-ready!”</i></p>
+ 
