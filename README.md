@@ -128,8 +128,9 @@ Open an issue or submit a pull request — contributions are always welcome!
 
 🙏 Credits
 
-Created with ❤️ by Jayadeep
+Created by N.Jayadeep,M.Shafique,P.Siddhesh,N.Adarsh
 For modernizing the college canteen experience — fast, simple, and secure for everyone!
 
-<p align="center"><i>“Today's app is clean and functional — tomorrow's will be even sleeker, officially integrated, and campus-ready!”</i></p>
+> _“Today's app is clean and functional — tomorrow's will be even sleeker, officially integrated, and campus-ready!”_
+
  
